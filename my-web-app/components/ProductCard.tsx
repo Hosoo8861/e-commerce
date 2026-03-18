@@ -6,7 +6,7 @@ interface Product {
     img: string;
 }
 
-export default function ProductCard({ product, onAdd }: { product: Product, onAdd: (p: Product) => void }) {
+export default function ProductCard({ product, onAdd }: { product: Product, onAdd: (p: any) => void }) {
     return (
         <div className="bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl transition-all group border border-gray-100">
             <div className="relative h-48 overflow-hidden rounded-2xl mb-4">

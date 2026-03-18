@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
+import toast from "react-hot-toast"
 
 const products = [
   { id: 1, name: "iPhone 15 Pro", price: 3500000, cat: "Гар утас", img: "https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=400&auto=format&fit=crop" },
@@ -31,6 +32,26 @@ export default function Home() {
     setCart(cart.filter((_, i) => i !== index));
   };
 
+  const addToCart = (product: any) => {
+    const isExisting = cart.find((item) => item.id === product.id);
+
+    if (isExisting) {
+      toast.success(`${product.name}-ийн тоо нэмэгдлээ`, { icon: '➕' });
+    } else {
+      toast.success(`${product.name} сагсанд нэмэгдлээ`, { icon: '✔️' });
+    }
+
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+        );
+      }
+      return [...prevCart, { ...product, qty: 1 }];
+    });
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -49,7 +70,7 @@ export default function Home() {
             onClick={() => setIsCartOpen(true)}
             className="bg-gray-900 text-white px-8 py-2 rounded-full font-bold hover:bg-blue-600 transition"
           >
-            Сагс ({cart.length})
+            Сагс ({cart.reduce((total, item) => total + item.qty, 0)})
           </button>
         </div>
       </header>
@@ -76,7 +97,7 @@ export default function Home() {
         <section className="flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map(p => (
-              <ProductCard key={p.id} product={p} onAdd={(item) => setCart([...cart, item])} />
+              <ProductCard key={p.id} product={p} onAdd={addToCart} />
             ))}
           </div>
 
