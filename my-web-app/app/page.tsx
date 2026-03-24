@@ -104,6 +104,7 @@ export default function Home() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         onRemove={removeFromCart}
+        onClear={() => setCart([])}
       />
     </main>
   );
