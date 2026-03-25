@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
@@ -8,7 +8,26 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function Home() {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem("cart");
+
+      if (!savedCart) return [];
+
+      try {
+        return JSON.parse(savedCart);
+      } catch (error) {
+        console.log("Cart value error >>>>>>>>>>>>>>>>", error);
+        localStorage.removeItem("cart");
+        return [];
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCat, setSelectedCat] = useState("Бүгд");
@@ -70,7 +89,7 @@ export default function Home() {
       />
 
 
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-8 pt-6">
         {/* Sidebar */}
         <aside className="w-full md:w-64 shrink-0">
           <h2 className="font-bold text-gray-400 mb-4 uppercase text-sm tracking-widest">Ангилал</h2>

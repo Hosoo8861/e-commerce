@@ -1,4 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
 
 // 1. Формд орох өгөгдөл
 interface FormData {
@@ -17,11 +18,22 @@ interface FormErrors {
 // 3. props - ийн төрлийг нэмнэ
 interface CheckoutFormProps {
     onSuccess: () => void;
+    cart: any[];
 }
 
-export default function CheckoutForm({ onSuccess }: CheckoutFormProps) {
+export default function CheckoutForm({ onSuccess, cart }: CheckoutFormProps) {
     const [formData, setFormData] = useState<FormData>({ name: '', phone: '', address: '' });
     const [errors, setErrors] = useState<FormErrors>({});
+    const { user } = useAuth();
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (errors[name as keyof FormErrors]) {
+            setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,27 +45,45 @@ export default function CheckoutForm({ onSuccess }: CheckoutFormProps) {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-        } else {
-            alert("Захиалга амжилттай! Баярлалаа.");
+            return;
         }
 
-        if (Object.keys(newErrors).length === 0) {
-            alert("Захиалга амжилттай!");
-            onSuccess();
-        }
+        handleOrder();
+
     };
 
-    // Input өөрчлөгдөх үед ажиллах функц
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+    const handleOrder = () => {
+        if (!user || cart.length === 0) {
+            alert("Нэвтрэх эсвэл сагсаа шалгана уу!");
+            return;
+        };
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+        const newOrder = {
+            id: Date.now(),
+            userEmail: user.email,
+            costumerName: formData.name,
+            phone: formData.phone,
+            address: formData.address,
+            items: cart,
+            total: total,
+            date: new Date().toLocaleString(),
+        }
+
+        const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+        localStorage.setItem("orders", JSON.stringify([...existingOrders, newOrder]));
+
+        alert("Захиалга амжилттай~ Баярлалаа.");
+        onSuccess();
+    }
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px' }}>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-4'>
             <input
                 name="name"
                 placeholder="Нэр"
+                value={formData.name}
                 onChange={handleChange}
                 style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
             />

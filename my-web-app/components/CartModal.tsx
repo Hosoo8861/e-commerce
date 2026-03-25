@@ -72,7 +72,7 @@ export default function CartModal({
               <button onClick={() => setShowCheckout(false)} className="mb-4 text-blue-600 font-bold hover:underline text-sm">
                 ← Сагс руу буцах
               </button>
-              <CheckoutForm onSuccess={handleOrderSuccess} />
+              <CheckoutForm onSuccess={handleOrderSuccess} cart={cart} />
             </div>
           ) : (
             // Сагсны жагсаалт хэсэг
@@ -111,7 +111,7 @@ export default function CartModal({
                 onClick={() => setShowCheckout(true)}
                 className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
               >
-                Төлбөр төлөх рүү шилжих
+                Төлбөр төлөх
               </button>
             ) : (
               // Нэвтрээгүй үед: Login/Register Form

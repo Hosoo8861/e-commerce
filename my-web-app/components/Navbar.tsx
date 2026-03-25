@@ -1,5 +1,6 @@
 "use client";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 import { toast } from "react-hot-toast";
 
 interface NavbarProps {
@@ -53,12 +54,14 @@ export default function Navbar({ cartCount, onCartOpen, onSearchChange, onLoginC
                     {/* Auth хэсэг */}
                     {user ? (
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-black">
-                                {user.name[0].toUpperCase()}
-                            </div>
-                            <span className="text-sm font-bold text-gray-700 hidden lg:block">
-                                {user.name}
-                            </span>
+                            <Link href="/orders" className="flex items-center gap-3 hover:opacity-80 transition cursor-pointer">
+                                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-black">
+                                    {user.name[0].toUpperCase()}
+                                </div>
+                                <span className="text-sm font-bold text-gray-700 hidden lg:block">
+                                    {user.name}
+                                </span>
+                            </Link>
                             <button
                                 onClick={() => { logout(); toast.error("Системээс гарлаа"); }}
                                 className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-2 rounded-xl transition"
