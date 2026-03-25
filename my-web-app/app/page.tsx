@@ -4,6 +4,8 @@ import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
 import toast from "react-hot-toast"
+import Navbar from "@/components/Navbar";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function Home() {
   const [cart, setCart] = useState<any[]>([]);
@@ -47,25 +49,12 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 mb-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <h1 className="text-2xl font-black text-blue-600 italic">E-Commerce</h1>
+      <Navbar
+        cartCount={cart.length}
+        onCartOpen={() => setIsCartOpen(true)}
+        onSearchChange={setSearchTerm}
+      />
 
-          <input
-            type="text"
-            placeholder="Хайх барааны нэрээ бичнэ үү..."
-            className="w-full md:w-96 px-6 py-2 bg-gray-100 rounded-full outline-none focus:ring-2 focus:ring-blue-500 transition"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="bg-gray-900 text-white px-8 py-2 rounded-full font-bold hover:bg-blue-600 transition"
-          >
-            Сагс ({cart.reduce((total, item) => total + item.qty, 0)})
-          </button>
-        </div>
-      </header>
 
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
@@ -107,5 +96,6 @@ export default function Home() {
         onClear={() => setCart([])}
       />
     </main>
+
   );
 }

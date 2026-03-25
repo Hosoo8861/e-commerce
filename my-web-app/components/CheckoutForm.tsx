@@ -39,6 +39,7 @@ export default function CheckoutForm({ onSuccess }: CheckoutFormProps) {
 
         if (Object.keys(newErrors).length === 0) {
             alert("Захиалга амжилттай!");
+            onSuccess();
         }
     };
 

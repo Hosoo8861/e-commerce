@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CheckoutForm from "./CheckoutForm";
+import { AuthContext, useAuth } from "@/contexts/AuthContext";
 
 export default function CartModal({
   cart,
@@ -15,10 +16,26 @@ export default function CartModal({
   onClear: () => void
 }) {
   const [showCheckout, setShowCheckout] = useState(false);
+  // const { user } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const auth = useAuth();
+
+  console.log("auth value ????????????????", auth);
+  const { login, user } = auth || {};
+
+  const handleCheckoutClick = () => {
+    if (!user) {
+      alert("Та эхлээд нэвтэрнэ үү!");
+    } else {
+      setShowCheckout(true);
+    }
+  }
 
   const handleOrderSuccess = () => {
     console.log("sags hoosloh???????????");
     onClear();
+    localStorage.removeItem('cart');
     setShowCheckout(false);
     onClose();
   }
@@ -35,6 +52,7 @@ export default function CartModal({
     setShowCheckout(false);
     onClose();
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -86,17 +104,57 @@ export default function CartModal({
         </div>
 
         {!showCheckout && cart.length > 0 && (
-          <div className="p-6 bg-gray-50 border-t">
-            <div className="flex justify-between items-center mb-6 text-xl font-black">
+          <div className="p-6 bg-gray-50 border-t space-y-4">
+            <div className="flex justify-between items-center mb-2 text-xl font-black">
               <span>Нийт:</span>
               <span>{total.toLocaleString()}₮</span>
             </div>
-            <button
-              onClick={() => setShowCheckout(true)}
-              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition"
-            >
-              Төлбөр төлөх рүү шилжих
-            </button>
+
+            {user ? (
+              /* Нэвтэрсэн үед харагдах товч */
+              <button
+                onClick={() => setShowCheckout(true)}
+                className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all"
+              >
+                Төлбөр төлөх рүү шилжих
+              </button>
+            ) : (
+              /* Нэвтрээгүй үед харагдах Login хэсэг */
+              <div className="space-y-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <p className="text-sm text-center text-red-500 font-bold bg-red-50 py-2 rounded-lg">
+                  ⚠️ Захиалга өгөхийн тулд нэвтэрнэ үү
+                </p>
+
+                <input
+                  type="email"
+                  placeholder="И-мэйл"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <input
+                  type="password"
+                  placeholder="Нууц үг"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <button
+                  onClick={() => {
+                    console.log("<======================= clicked ===============>", typeof login);
+                    const res = login(email, password);
+                    console.log("<======================= login value ===============>", res)
+                    if (res && !res.success) { alert(res.message) }
+                    else if (res && res.success) {
+
+                    };
+                  }}
+                  className="w-full bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition"
+                >
+                  Нэвтрэх
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
