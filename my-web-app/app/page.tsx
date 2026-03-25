@@ -12,6 +12,19 @@ export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCat, setSelectedCat] = useState("Бүгд");
+  const [isAuthOnly, setIsAuthOnly] = useState(false);
+
+  // Login
+
+  const handleLoginClick = () => {
+    setIsAuthOnly(true);
+    setIsCartOpen(true);
+  }
+
+  const handleCartClick = () => {
+    setIsAuthOnly(false);
+    setIsCartOpen(true);
+  }
 
   const categories = ["Бүгд", "Гар утас", "Планшет", "Чихэвч", "Компьютер", "Тоглоом"];
 
@@ -51,8 +64,9 @@ export default function Home() {
       {/* Header */}
       <Navbar
         cartCount={cart.length}
-        onCartOpen={() => setIsCartOpen(true)}
+        onCartOpen={handleCartClick}
         onSearchChange={setSearchTerm}
+        onLoginClick={handleLoginClick}
       />
 
 
@@ -87,14 +101,17 @@ export default function Home() {
           )}
         </section>
       </div>
+      {isCartOpen && (
+        <CartModal
+          isAuthOnly={isAuthOnly}
+          cart={cart}
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          onRemove={removeFromCart}
+          onClear={() => setCart([])}
+        />
+      )}
 
-      <CartModal
-        cart={cart}
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        onRemove={removeFromCart}
-        onClear={() => setCart([])}
-      />
     </main>
 
   );

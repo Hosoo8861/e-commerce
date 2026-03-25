@@ -14,11 +14,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login = (email: string, pass: string) => {
-        const testUser = { email: "test@test.com", password: "123", name: "Зочин" };
+        const users = JSON.parse(localStorage.getItem("all_users") || "[]");
+        const found = users.find((u: any) => u.email === email && u.password === pass);
 
-        if (email === testUser.email && pass === testUser.password) {
-            setUser(testUser);
-            localStorage.setItem("activeUser", JSON.stringify(testUser));
+        if (found) {
+            setUser(found);
+            localStorage.setItem("activeUser", JSON.stringify(found));
+            window.location.reload();
             return { success: true };
         }
 
@@ -30,8 +32,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('activeUser');
     };
 
+    const register = (name: string, email: string, pass: string) => {
+        const localUsers = JSON.parse(localStorage.getItem("all_users") || "[]");
+
+        const isExist = localUsers.find((u: any) => u.email === email);
+
+        if (isExist) {
+            return { success: false, message: "Энэ и-мэйл хаяг аль хэдийн бүртгүүлсэн байна!" };
+        }
+        const newUser = {
+            name,
+            email,
+            password: pass
+        };
+
+        const updateUsers = [...localUsers, newUser];
+
+        localStorage.setItem("all_users", JSON.stringify(updateUsers));
+
+        return { success: true };
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, register }}>
             {children}
         </AuthContext.Provider>
     );

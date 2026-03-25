@@ -5,17 +5,18 @@ import { toast } from "react-hot-toast";
 interface NavbarProps {
     cartCount: number;
     onCartOpen: () => void;
+    onLoginClick: () => void;
     onSearchChange: (value: string) => void;
 }
 
-export default function Navbar({ cartCount, onCartOpen, onSearchChange }: NavbarProps) {
-    const { user, login, logout } = useAuth();
+export default function Navbar({ cartCount, onCartOpen, onSearchChange, onLoginClick }: NavbarProps) {
+    const { user, logout } = useAuth();
 
-    const handleFakeLogin = () => {
-        const fakeUser = { name: "Developer", email: "dev@test.com" };
-        login(fakeUser);
-        toast.success("Амжилттай нэвтэрлээ!");
-    };
+    // const handleFakeLogin = () => {
+    //     const fakeUser = { name: "Developer", email: "dev@test.com" };
+    //     login(fakeUser);
+    //     toast.success("Амжилттай нэвтэрлээ!");
+    // };
 
     return (
         <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 p-4">
@@ -49,15 +50,17 @@ export default function Navbar({ cartCount, onCartOpen, onSearchChange }: Navbar
                     </button>
 
                     <div className="h-8 w-[1px] bg-gray-200 mx-1 hidden md:block" />
-
                     {/* Auth хэсэг */}
                     {user ? (
                         <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-black">
+                                {user.name[0].toUpperCase()}
+                            </div>
                             <span className="text-sm font-bold text-gray-700 hidden lg:block">
                                 {user.name}
                             </span>
                             <button
-                                onClick={() => { logout(); toast.error("Гарлаа!"); }}
+                                onClick={() => { logout(); toast.error("Системээс гарлаа"); }}
                                 className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-2 rounded-xl transition"
                             >
                                 Гарах
@@ -65,7 +68,7 @@ export default function Navbar({ cartCount, onCartOpen, onSearchChange }: Navbar
                         </div>
                     ) : (
                         <button
-                            onClick={handleFakeLogin}
+                            onClick={onLoginClick}
                             className="text-sm bg-blue-50 text-blue-600 px-6 py-2 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition-all active:scale-95"
                         >
                             Нэвтрэх
