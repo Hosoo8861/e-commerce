@@ -22,6 +22,7 @@ export default function ProductCard({ product, onAdd }: { product: Product, onAd
             <p className="text-blue-600 font-black text-xl my-2">{product.price.toLocaleString()}₮</p>
             <button
                 onClick={() => onAdd(product)}
+                suppressHydrationWarning
                 className="w-full py-3 bg-gray-100 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition active:scale-95"
             >
                 Сагсанд нэмэх

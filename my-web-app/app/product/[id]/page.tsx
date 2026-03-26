@@ -7,7 +7,7 @@ export default function ProductDetail() {
     const { id } = useParams();
     const product = products.find((p) => p.id === Number(id));
 
-    if (!product) return <div className="p-20 text-center">Бараа олдсонгүйю</div>;
+    if (!product) return <div className="p-20 text-center">Бараа олдсонгүй</div>;
 
     return (
         <div className="max-w-5xl mx-auto p-10">

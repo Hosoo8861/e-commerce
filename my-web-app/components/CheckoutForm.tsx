@@ -1,21 +1,18 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 
-// 1. Формд орох өгөгдөл
 interface FormData {
     name: string;
     phone: string;
     address: string;
 }
 
-// 2. Алдааны мессежүүд
 interface FormErrors {
     name?: string;
     phone?: string;
     address?: string;
 }
 
-// 3. props - ийн төрлийг нэмнэ
 interface CheckoutFormProps {
     onSuccess: () => void;
     cart: any[];
@@ -49,7 +46,6 @@ export default function CheckoutForm({ onSuccess, cart }: CheckoutFormProps) {
         }
 
         handleOrder();
-
     };
 
     const handleOrder = () => {
@@ -78,35 +74,56 @@ export default function CheckoutForm({ onSuccess, cart }: CheckoutFormProps) {
         onSuccess();
     }
 
+    // Input-үүдийн давтагдах Tailwind класс
+    const inputClasses = `w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm`;
+    const errorClasses = `text-red-500 text-xs font-medium mt-1 ml-1`;
+
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-4'>
-            <input
-                name="name"
-                placeholder="Нэр"
-                value={formData.name}
-                onChange={handleChange}
-                style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            {errors.name && <span style={{ color: 'red', fontSize: '12px' }}>{errors.name}</span>}
+        <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-2'>
+            <div className="flex flex-col">
+                <label className="text-xs font-bold text-gray-500 mb-1.5 ml-1">Хүлээн авагчийн нэр</label>
+                <input
+                    name="name"
+                    placeholder="Жишээ: Бат-Эрдэнэ"
+                    value={formData.name}
+                    suppressHydrationWarning
+                    onChange={handleChange}
+                    className={inputClasses}
+                />
+                {errors.name && <span className={errorClasses}>{errors.name}</span>}
+            </div>
 
-            <input
-                name="phone"
-                placeholder="Утас"
-                onChange={handleChange}
-                style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            {errors.phone && <span style={{ color: 'red', fontSize: '12px' }}>{errors.phone}</span>}
+            <div className="flex flex-col">
+                <label className="text-xs font-bold text-gray-500 mb-1.5 ml-1">Утасны дугаар</label>
+                <input
+                    name="phone"
+                    type="tel"
+                    placeholder="88xxxxxx"
+                    suppressHydrationWarning
+                    onChange={handleChange}
+                    className={inputClasses}
+                />
+                {errors.phone && <span className={errorClasses}>{errors.phone}</span>}
+            </div>
 
-            <textarea
-                name="address"
-                placeholder="Хүргэлтийн хаяг"
-                onChange={handleChange}
-                style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            {errors.address && <span style={{ color: 'red', fontSize: '12px' }}>{errors.address}</span>}
+            <div className="flex flex-col">
+                <label className="text-xs font-bold text-gray-500 mb-1.5 ml-1">Хүргэлтийн хаяг</label>
+                <textarea
+                    name="address"
+                    rows={3}
+                    placeholder="Дүүрэг, хороо, байр, тоот..."
+                    suppressHydrationWarning
+                    onChange={handleChange}
+                    className={`${inputClasses} resize-none`}
+                />
+                {errors.address && <span className={errorClasses}>{errors.address}</span>}
+            </div>
 
-            <button type="submit" style={{ cursor: 'pointer', padding: '10px', backgroundColor: '#1976d2', color: 'white', border: 'none', borderRadius: '4px' }}>
-                Захиалга өгөх
+            <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-2"
+            >
+                Захиалга баталгаажуулах
             </button>
         </form>
     );

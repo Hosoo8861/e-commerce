@@ -72,6 +72,7 @@ export default function Navbar({ cartCount, onCartOpen, onSearchChange, onLoginC
                     ) : (
                         <button
                             onClick={onLoginClick}
+                            suppressHydrationWarning
                             className="text-sm bg-blue-50 text-blue-600 px-6 py-2 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition-all active:scale-95"
                         >
                             Нэвтрэх
